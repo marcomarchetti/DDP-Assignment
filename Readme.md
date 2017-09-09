@@ -20,9 +20,8 @@ The project is an assignment of Coursera Developing Data Products Course
 -   Application is available on shinyapps.io
 
 The directory structure is:  
-- data: contains xlsx data  
-- src: cointains sources (ui.R, server.R, about.rmd)  
-- pitch: contains the R Presentation
+- src: cointains application sources and data sets.  
+- pitch: contains the R Presentation.
 
 The
 [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/)
