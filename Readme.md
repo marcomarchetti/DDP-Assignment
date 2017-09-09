@@ -20,11 +20,11 @@ The directory structure is:
 - src: cointains application sources and data sets.  
 - pitch: contains the R Presentation.
 
--   The
-    [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/)
-    is available on shinyapps.io
--   The [Pitch](http://rpubs.com/marcomarchetti/InternationalMigrations)
-    is available on RPubs.
+The
+[Application](https://marcomarchetti.shinyapps.io/internationalmigrations/)
+is available on shinyapps.io  
+The [Pitch](http://rpubs.com/marcomarchetti/InternationalMigrations) is
+available on RPubs.
 
 Data Sets
 ---------
