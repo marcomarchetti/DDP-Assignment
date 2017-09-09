@@ -20,7 +20,6 @@ The directory structure is:
 - src: cointains application sources and data sets.  
 - pitch: contains the R Presentation.  
     
-- Application source is available on this Github Repository  
 - The [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/) is available on shinyapps.io 
 - The [Pitch](http://rpubs.com/marcomarchetti/InternationalMigrations) is available on RPubs.
 
