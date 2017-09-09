@@ -1,6 +1,7 @@
 <style>
+
 .small-code pre code {
-  font-size: 20px;
+  font-size: 1.2em;
   word-wrap: break-word;
 }
 
@@ -55,38 +56,32 @@ Data set (xlsx - 101 Kb): [Child-migrants-and-refugee](https://data.unicef.org/w
 App: Server
 ========================================================
 class: small-code
+
 The Server Side App gets, clean and merge data from the two data sets, calculates percentage of Childs and finally creates plots. As an example we show a little part of the server side code.
-- The first part of this code gets unicef data.  
-- The second part of this code print the Total number of immigrants to Italy in 2015 and the number of Under 18. On the project, the server creates two maps (immigration and emigration) using **renderPlotly** function.  
-- The shiny UI uses **plotlyOutput** to plot the maps.
+
 ```{r}
 # Geting UNICEF data (Shiny Server code)  
 library(readxl) 
 CMRUrl <-"https://data.unicef.org/wp-content/uploads/2016/09/Child-migrants-and-refugees.xlsx"
 CRMFile <- "Child-migrants-and-refugees.xlsx"
 if (!file.exists(CRMFile)) {download.file(CMRUrl, destfile=CRMFile)}
-# Read Unicef Data  
 CMR2015 <- read_xlsx(CRMFile, col_names = FALSE, sheet="Countries", skip = 11, n_max =197)
-colnames(CMR2015) <- c("ISOCode","Countries",
-                       "MgrDestTot","MgrDestPerc","MgrDestPercU18", "MgrOrigTot","MgrOrigPerc",
-                       "RfgDestTot","RfgDestPercU18","RfgOrigTot","RfgOrigPercU18",
-                       "AsylDestTot","AsylOrigTot","IntDisplTot","RatifNum")
-
-# Print Total Immigrants and Childs (this is an example code, the shiny server creates maps) 
+colnames(CMR2015) <- c("ISOCode","Countries","MgrDestTot","MgrDestPerc","MgrDestPercU18","MgrOrigTot","MgrOrigPerc","RfgDestTot","RfgDestPercU18","RfgOrigTot","RfgOrigPercU18","AsylDestTot","AsylOrigTot","IntDisplTot","RatifNum")
+# Total Immigrants and Childs (example code, the shiny server creates maps) 
 MgrDestTot <- CMR2015[CMR2015$Countries == "Italy","MgrDestTot"]*1000
 MgrDestU18 <- MgrDestTot * as.numeric(CMR2015[CMR2015$Countries == "Italy","MgrDestPercU18"])/100
 MgrDestTot <- formatC(as.numeric(MgrDestTot), decimal.mark=",", big.mark=".", digits = 0, format = "f")
 MgrDestU18  <- formatC(as.numeric(MgrDestU18) , decimal.mark=",", big.mark=".", digits = 0, format = "f")
-paste('(2015) Immigrants in', CMR2015[CMR2015$Countries == "Italy","Countries"], " - Totals:", MgrDestTot, "- Under 18:", MgrDestU18)
-
+paste('(2015) Immigrants in Italy'," - Totals:", MgrDestTot, "- Under 18:", MgrDestU18)
 ```
+
 App: User Interface
 ========================================================
 The UI allows the user to select a "Country Name" and shows migration data on the sidebar panel and 2 choropleth maps on separates tabs. The maps shows Migration Origin-Destination matrices and the selected Country is Red.   
 
 <div align="center">
-<img src="UI.png" width=700 height=500>
+<img src="UI.png" width=650 height=450>
 </div>
 
-- Application source is available on Github Repository  
-- [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/) is available on shinyapps.io  
+- [Application source](https://github.com/marcomarchetti/DDP-Assignment) is available on Github Repository  
+- [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/) is available on shinyapps.io 
