@@ -1,0 +1,96 @@
+<style>
+.small-code pre code {
+  font-size: 20px;
+  word-wrap: break-word;
+}
+
+.reveal {
+  font-size: 25px;
+  }
+</style>
+
+International Migrations
+========================================================
+author: Marco Marchetti
+date: September 08, 2017
+autosize: true
+
+The project is an assignment of Coursera Developing Data Products Course (John Hopkins University).
+
+Overview
+========================================================
+- This Project shows 2015 estimates on international migrations and it is based on two data sets from **United Nations** and from **UNICEF**.   
+- United Nation data set contains a migrants origin-destination matrix and UNICEF data set contains  information about childs, refugees, asylum seekers and internally displaced persons.  
+- Both data set refers to the same basic data from United Nations so the data are consistents and can be merged. 
+- The Application was developed using **R**, **Plotly** and **Shiny** and shows migration data by Country:
+ - Immigration Origin-Destination map  
+ - Emigration Origin-Destination map  
+ - Num. of Emigrants and Immigrants (Total and Childs)
+ - Num. of Refugee (Total and Childs)
+ - Num. of Asylum Seekers
+ - The Internal Displacement
+
+ 
+
+
+
+Data sets
+========================================================
+## United Nations data set:
+The [International migrant stock 2015](http://www.un.org/en/development/desa/population/migration/data/estimates2/estimates15.shtml)  presents estimates of international migrant by age, sex and origin. Estimates are presented for 1990, 1995, 2000, 2005, 2010 and 2015 and are available for all countries and areas of the world. The estimates are based on official statistics on the foreign-born or the foreign population.  
+Data set (xlsx - 5.213 Kb): [Total international migrant stock](http://www.un.org/en/development/desa/population/migration/data/estimates2/data/UN_MigrantStockByOriginAndDestination_2015.xlsx)
+
+*United Nations, Department of Economic and Social Affairs, Population Division (2015)*  
+*Trends in International Migrant Stock: Migrants by Destination and Origin (United Nations database, POP/DB/MIG/Stock/Rev.2015)*  
+*December 2015 - Copyright © 2015 by United Nations. All rights reserved*  
+
+## UNICEF data set:
+The [UNICEF dataset](https://data.unicef.org/topic/child-migration-and-displacement/migration/) shows 2015 data of Child migrants and refugees (international migrants, refugees, asylum seekers and internally displaced persons.)  
+Data set (xlsx - 101 Kb): [Child-migrants-and-refugee](https://data.unicef.org/wp-content/uploads/2016/09/Child-migrants-and-refugees.xlsx)
+
+*UNICEF GLOBAL DATABASES*  
+*Data Downloaded from data.unicef.org*  
+*Last update: 31 August 2016*  
+
+App: Server
+========================================================
+class: small-code
+The Server Side App gets, clean and merge data from the two data sets, calculates percentage of Childs and finally creates plots. As an example we show a little part of the server side code.
+- The first part of this code gets unicef data.  
+- The second part of this code print the Total number of immigrants to Italy in 2015 and the number of Under 18. On the project, the server creates two maps (immigration and emigration) using **renderPlotly** function.  
+- The shiny UI uses **plotlyOutput** to plot the maps.
+
+```r
+# Geting UNICEF data (Shiny Server code)  
+library(readxl) 
+CMRUrl <-"https://data.unicef.org/wp-content/uploads/2016/09/Child-migrants-and-refugees.xlsx"
+CRMFile <- "Child-migrants-and-refugees.xlsx"
+if (!file.exists(CRMFile)) {download.file(CMRUrl, destfile=CRMFile)}
+# Read Unicef Data  
+CMR2015 <- read_xlsx(CRMFile, col_names = FALSE, sheet="Countries", skip = 11, n_max =197)
+colnames(CMR2015) <- c("ISOCode","Countries",
+                       "MgrDestTot","MgrDestPerc","MgrDestPercU18", "MgrOrigTot","MgrOrigPerc",
+                       "RfgDestTot","RfgDestPercU18","RfgOrigTot","RfgOrigPercU18",
+                       "AsylDestTot","AsylOrigTot","IntDisplTot","RatifNum")
+
+# Print Total Immigrants and Childs (this is an example code, the shiny server creates maps) 
+MgrDestTot <- CMR2015[CMR2015$Countries == "Italy","MgrDestTot"]*1000
+MgrDestU18 <- MgrDestTot * as.numeric(CMR2015[CMR2015$Countries == "Italy","MgrDestPercU18"])/100
+MgrDestTot <- formatC(as.numeric(MgrDestTot), decimal.mark=",", big.mark=".", digits = 0, format = "f")
+MgrDestU18  <- formatC(as.numeric(MgrDestU18) , decimal.mark=",", big.mark=".", digits = 0, format = "f")
+paste('(2015) Immigrants in', CMR2015[CMR2015$Countries == "Italy","Countries"], " - Totals:", MgrDestTot, "- Under 18:", MgrDestU18)
+```
+
+```
+[1] "(2015) Immigrants in Italy  - Totals: 5.789.000 - Under 18: 463.120"
+```
+App: User Interface
+========================================================
+The UI allows the user to select a "Country Name" and shows migration data on the sidebar panel and 2 choropleth maps on separates tabs. The maps shows Migration Origin-Destination matrices and the selected Country is Red.   
+
+<div align="center">
+<img src="UI.png" width=700 height=500>
+</div>
+
+- Application source is available on Github Repository  
+- [Application](https://marcomarchetti.shinyapps.io/internationalmigrations/) is available on shinyapps.io  
